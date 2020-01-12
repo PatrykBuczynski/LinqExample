@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace LinqExample
 {
@@ -121,6 +122,45 @@ namespace LinqExample
             }
             //****** Task [6] ******
             Console.WriteLine("\n Task [6] \n");
+
+            Console.WriteLine("\n Task [1] recreated \n");
+
+            var task6aQuery = schoolCollection.students.Where(student => student.City == "Seattle" || student.City == "Warsaw");
+
+            foreach (Student student in task6aQuery)
+            {
+                Console.WriteLine(student.First + " " + student.Last);
+            }
+            int task6Number = task6aQuery.Count();
+            Console.WriteLine("Number of students: " + task6Number);
+
+
+            Console.WriteLine("\n Task [4] recreated \n");
+
+
+            var task6bQuery = schoolCollection.students.Where(student => student.City == "Warsaw").Select(student => student.Last).Concat(schoolCollection.teachers.Where(teacher => teacher.City == "Warsaw").Select(teacher => teacher.Last));
+
+
+            foreach (string name in task6bQuery)
+            {
+                Console.WriteLine(name);
+            }
+
+
+            //****** Task [7] ******
+            Console.WriteLine("\n Task [7] \n");
+
+            var task7Query = new XElement("Root",
+                from student in schoolCollection.students
+                let x = string.Format("{0}, {1}, {2}, {3}", student.Scores[0], student.Scores[1], student.Scores[2], student.Scores[3])
+                select new XElement("student",
+                 new XElement("First", student.First),
+                 new XElement("Last", student.Last),
+                 new XElement("Scores", x)
+                 )
+                );
+            Console.WriteLine(task7Query);
+            Console.ReadKey();
         }
     }
 }
